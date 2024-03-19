@@ -1,11 +1,13 @@
 import axios from 'axios'
 import React, { useEffect, useState } from 'react'
 import { useParams } from 'react-router-dom'
+import { add } from '../redux/CartSlice'
+import { useDispatch } from 'react-redux'
 
 const Product = () => {
     const [product, setProduct] = useState({})
     const {id} = useParams()
-    console.log(id)
+    const dispatch = useDispatch()
     
     useEffect(() => {
         getProduct()
@@ -17,8 +19,40 @@ const Product = () => {
         setProduct(data)
     }
 
+    const handleAdd = (product) => {
+        dispatch(add(product))
+    }
+
   return (
-    <div>Product</div>
+    <div className='container mt-4'>
+      {Object.keys(product).length>0 ? (
+        <>
+          <div className='row'>
+              <div className='col-md-6'>
+                <img src={product.image} className='img-fluid' alt={product.title} />
+              </div>
+              <div className='col-md-6'>
+                <h4 className='mt-4'>{product.title}</h4>
+                <div>
+                  <span className='bg-primary text-white px-3'>price: ${product.price}</span>
+                </div>
+                <div>
+                  <h4>{product.category}</h4>
+                </div>
+                <div>
+                  <p>{product.description}</p>
+                </div>
+
+                <div>
+                  <button className='btn btn-warning'
+                  onClick={()=>{handleAdd(product)}}
+                  >Add to Cart</button>
+                </div>
+              </div>
+          </div>
+        </>
+      ) : <p>Loading</p>}
+    </div>
   )
 }
 
